@@ -1,0 +1,46 @@
+#name: Release Tag
+#
+#on:
+#  push:
+#    branches:
+#      - main
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v3
+#        with:
+#          persist-credentials: false
+#
+#      - name: Extract Version from Commit Message
+#        id: extract_version_name
+#        run: |
+#          COMMIT_MSG="${{ github.event.head_commit.message }}"
+#          VERSION=$(echo "$COMMIT_MSG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+#          if [[ -z "$VERSION" ]]; then
+#            echo "❌ 커밋 메시지에서 버전을 찾을 수 없습니다."
+#            exit 1
+#          fi
+#          echo "version=$VERSION" >> $GITHUB_OUTPUT
+#          echo "VERSION=$VERSION" >> $GITHUB_ENV
+#
+#      - name: Set Up Git Identity
+#        run: |
+#          git config user.name "${{ github.actor }}"
+#          git config user.email "${{ github.actor }}@users.noreply.github.com"
+#
+#      - name: Create Git Tag
+#        run: |
+#          git tag "v$VERSION" -m "Release v$VERSION"
+#          git push https://x-access-token:${{ secrets.LC_TOKEN }}@github.com/ahnsozero/LetterCounter.git "v$VERSION"
+#
+#      - name: Create GitHub Release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          tag_name: v${{ steps.extract_version_name.outputs.version }}
+#          name: Release v${{ steps.extract_version_name.outputs.version }}
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.LC_TOKEN }}

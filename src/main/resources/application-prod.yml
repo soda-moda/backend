@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/moda
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate # Entity 클래스와 실제 DB 테이블 구조가 일치하는지 확인만 하도록 설정
+    properties:
+      hibernate:
+        show_sql: false
+        dialect: org.hibernate.dialect.MariaDBDialect
+    open-in-view: false # 스레드풀 트랜잭션 직후 스레드 반납
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher # path_pattern_parser 기본값; 스웨거 호환
+
+logging:
+  level:
+    org.hibernate.SQL: warn
